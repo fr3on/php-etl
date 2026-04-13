@@ -9,6 +9,7 @@
             "role": "Developer"
         }
     ],
+    "keywords": ["etl", "pipeline", "lazy", "generators", "typed", "php84"],
     "require": {
         "php": ">=8.4"
     },

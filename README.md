@@ -4,22 +4,22 @@ A modern, typed, and lazy PHP 8.4+ data pipeline library.
 
 `php-etl` is a high-performance ETL (Extract, Transform, Load) library designed to handle massive datasets with a constant memory footprint. Using PHP Generators under the hood, it processes data row-by-row, ensuring even the largest pipelines remain memory-safe.
 
-## ✨ Features
+## Features
 
-- **🚀 Lazy Evaluation**: Entirely stream-based using Generators. Never materialize large arrays again.
-- **🛡️ Typed Pipelines**: Full support for PHPStan generics (`Pipeline<TIn, TOut>`).
-- **🔗 Fluent API**: Easy-to-read pipeline construction via `Extract::from()`.
-- **💥 Error Resilience**: Configurable error policies (`COLLECT`, `SKIP`, `THROW`) to manage row-level failures.
-- **📦 Zero Dependencies**: Lightweight core with no runtime dependencies.
-- **⚡ Batching Support**: Built-in support for processing rows in batches (useful for bulk inserts).
+- **Lazy Evaluation**: Entirely stream-based using Generators. Never materialize large arrays again.
+- **Typed Pipelines**: Full support for PHPStan generics (`Pipeline<TIn, TOut>`).
+- **Fluent API**: Easy-to-read pipeline construction via `Extract::from()`.
+- **Error Resilience**: Configurable error policies (`COLLECT`, `SKIP`, `THROW`) to manage row-level failures.
+- **Zero Dependencies**: Lightweight core with no runtime dependencies.
+- **Batching Support**: Built-in support for processing rows in batches (useful for bulk inserts).
 
-## 🚀 Installation
+## Installation
 
 ```bash
 composer require fr3on/php-etl
 ```
 
-## 🛠 Usage
+## Usage
 
 ### Basic Example
 
@@ -63,7 +63,7 @@ Extract::from($source)
     ->run();
 ```
 
-## 🧪 Testing & Benchmarking
+## Testing & Benchmarking
 
 The core library is tested for memory safety and high throughput (>2M rows/sec on standard hardware).
 
@@ -74,6 +74,6 @@ composer analyse      # Run PHPStan Level 9
 composer bench        # Run PHPBench
 ```
 
-## 📄 License
+## License
 
 MIT License. See [LICENSE](LICENSE) for details.
