@@ -1,0 +1,36 @@
+{
+    "name": "fr3on/php-etl",
+    "description": "A typed, lazy PHP 8.4+ data pipeline / ETL library.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ahmed Mardi",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1",
+        "phpbench/phpbench": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fr3on\\Etl\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fr3on\\Etl\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:memory": "php -d memory_limit=32M vendor/bin/phpunit",
+        "analyse": "phpstan analyse --level 9 src",
+        "bench": "phpbench run benchmarks --report=default"
+    }
+}

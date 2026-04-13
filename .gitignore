@@ -1,0 +1,6 @@
+/vendor/
+/composer.phar
+/.phpstan.cache/
+/.phpunit.cache/
+/.php-cs-fixer.cache
+/phpbench.json (Optional, but keeping for local use)
