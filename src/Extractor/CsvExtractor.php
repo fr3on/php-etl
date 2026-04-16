@@ -47,29 +47,24 @@ class CsvExtractor implements ExtractorInterface
         $rowNumber = 0;
 
         foreach ($file as $row) {
-            // Skip empty rows that SplFileObject might still return
-            if ($row === [null] || empty($row)) {
+            if (!is_array($row) || $row === [null] || empty($row)) {
                 continue;
             }
 
             if ($this->hasHeader && $headers === null) {
-                /** @var list<string> $row */
-                $headers = $row;
+                $headers = array_map(fn($v) => (string)$v, $row);
                 continue;
             }
 
             if ($this->hasHeader && $headers !== null) {
-                // Map row values to headers
-                $data = @array_combine($headers, (array)$row);
-                if ($data === false) {
-                    // Handle mismatch between header count and row count if necessary
-                    // For now, we yield as is or throw? ETL usually wants consistency.
-                    // Let's yield as a list if combine fails, or skip.
-                    continue; 
+                if (count($headers) !== count($row)) {
+                    continue;
                 }
+                
+                $data = array_combine($headers, $row);
                 yield $rowNumber++ => $data;
             } else {
-                yield $rowNumber++ => (array)$row;
+                yield $rowNumber++ => $row;
             }
         }
     }

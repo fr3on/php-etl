@@ -50,7 +50,9 @@ class PipelineBuilder
      */
     public function extract(SourceInterface $source): self
     {
+        /** @phpstan-ignore-next-line */
         $this->source = $source;
+
         return $this;
     }
 
