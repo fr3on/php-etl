@@ -25,6 +25,16 @@ class Pipeline
     private ErrorPolicy $errorPolicy = ErrorPolicy::THROW;
 
     /**
+     * Start building a new pipeline.
+     * 
+     * @return PipelineBuilder<mixed>
+     */
+    public static function create(): PipelineBuilder
+    {
+        return new PipelineBuilder();
+    }
+
+    /**
      * @param SourceInterface<TIn> $source
      * @param SinkInterface<TOut> $sink
      */

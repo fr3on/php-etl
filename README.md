@@ -8,10 +8,12 @@ A modern, typed, and lazy PHP 8.4+ data pipeline library.
 
 - **Lazy Evaluation**: Entirely stream-based using Generators. Never materialize large arrays again.
 - **Typed Pipelines**: Full support for PHPStan generics (`Pipeline<TIn, TOut>`).
-- **Fluent API**: Easy-to-read pipeline construction via `Extract::from()`.
+- **High-Performance Extractors**: Built-in support for **CSV** and **JSON Lines** (ndjson) with zero memory overhead.
+- **Batching & Chunking**: Efficiently process rows in batches using `chunk($size)` or `batch($size)`.
+- **Fluent API**: Modern entry point via `Pipeline::create()`.
 - **Error Resilience**: Configurable error policies (`COLLECT`, `SKIP`, `THROW`) to manage row-level failures.
+- **Bulk Loading**: Built-in `BulkPdoLoader` for high-performance database inserts.
 - **Zero Dependencies**: Lightweight core with no runtime dependencies.
-- **Batching Support**: Built-in support for processing rows in batches (useful for bulk inserts).
 
 ## Installation
 
@@ -24,48 +26,44 @@ composer require fr3on/php-etl
 ### Basic Example
 
 ```php
-use Fr3on\Etl\Extract;
-use Fr3on\Etl\Source\ArraySource;
+use Fr3on\Etl\Pipeline;
+use Fr3on\Etl\Extractor\CsvExtractor;
 use Fr3on\Etl\Sink\CallbackSink;
 
-Extract::from(new ArraySource([1, 2, 3, 4, 5]))
-    ->map(fn($n) => $n * 10)
-    ->filter(fn($n) => $n > 25)
-    ->into(new CallbackSink(fn($n) => print($n . PHP_EOL)))
+Pipeline::create()
+    ->extract(new CsvExtractor('transactions.csv'))
+    ->filter(fn($row) => $row['status'] === 'SUCCESS')
+    ->map(fn($row) => ['id' => $row['tx_id'], 'amt' => (float)$row['amount']])
+    ->into(new CallbackSink(fn($row) => print_r($row)))
     ->run();
-// Output: 30, 40, 50
 ```
 
-### Error Collection
+### Bulk Loading Example
 
 ```php
-use Fr3on\Etl\Error\ErrorPolicy;
+use Fr3on\Etl\Loader\BulkPdoLoader;
 
-$result = Extract::from($source)
-    ->map($riskyTransform)
-    ->withErrorPolicy(ErrorPolicy::COLLECT)
-    ->into($sink)
-    ->run();
-
-foreach ($result->errors as $error) {
-    echo "Error on row {$error->rowNumber} at stage '{$error->stageName}': {$error->exception->getMessage()}\n";
-}
-```
-
-### Batch Processing
-
-```php
-Extract::from($source)
-    ->batch(500)
-    ->map(fn(array $batch) => $db->bulkInsert($batch))
-    ->unbatch()
-    ->into($sink)
+Pipeline::create()
+    ->extract(new CsvExtractor('large_data.csv'))
+    ->chunk(1000)
+    ->load(new BulkPdoLoader($pdo, 'target_table'))
     ->run();
 ```
+
+## Performance
+
+`php-etl` is built for extreme efficiency. Benchmarks on 100,000 rows demonstrate sub-second processing with a constant memory footprint.
+
+| Extractor | Throughput | Peak Memory | Time (100k rows) |
+| :--- | :--- | :--- | :--- |
+| **JsonExtractor (JSONL)** | **~1,080,000 rows/sec** | **~2.0 MB** | **91 ms** |
+| **CsvExtractor** | **~730,000 rows/sec** | **~2.0 MB** | **136 ms** |
+
+*Benchmarks run on standard hardware (PHP 8.4, Opcache off). Results may vary depending on row complexity.*
 
 ## Testing & Benchmarking
 
-The core library is tested for memory safety and high throughput (>2M rows/sec on standard hardware).
+The core library is tested for memory safety and high throughput.
 
 ```bash
 composer test         # Run PHPUnit

@@ -4,3 +4,4 @@
 /.phpunit.cache/
 /.php-cs-fixer.cache
 /phpbench.json (Optional, but keeping for local use)
+/composer.lock
